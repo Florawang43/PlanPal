@@ -1,4 +1,3 @@
-// screens/BusinessScreen.tsx
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, Alert, StyleSheet } from "react-native";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
@@ -44,7 +43,7 @@ export default function BusinessScreen() {
         Welcome, {profile.displayName || profile.email}
       </Text>
       <Text style={styles.subtitle}>
-        Member since: {profile.createdAt.toDate().toLocaleDateString()}
+        Member since: {profile.createdAt?.toDate?.().toLocaleDateString?.() || ""}
       </Text>
       <Button title="Sign Out" onPress={handleSignOut} />
     </View>
