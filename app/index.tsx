@@ -6,6 +6,10 @@ import SignInForm from '../components/SignInForm';
 import SignUpForm from '../components/SignupForm';
 import { signInWithEmail, signUpNewUser } from '../utils/supabase';
 
+if (typeof structuredClone === 'undefined') {
+    globalThis.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
+}
+
 export default function App() {
     const [isSigningIn, setIsSigningIn] = useState(true);
     const [error, setError] = useState('');

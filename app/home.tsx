@@ -16,7 +16,7 @@ export default function HomePage() {
         <View style={styles.container}>
             <Text style={styles.title}>Hello World</Text>
             <Text style={styles.subtitle}>Welcome, {parsedUser?.user_metadata?.user_name || parsedUser?.email}</Text>
-            <Text style={styles.date}>Member since: {parsedUser?.created_at}</Text>
+            <Text style={styles.date}>Member uuid: {parsedUser?.id}</Text>
             <Button title="Sign Out" onPress={handleSignOut} />
         </View>
     );
