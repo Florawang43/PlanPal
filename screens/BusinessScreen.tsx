@@ -4,10 +4,14 @@ import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../firebase";
 import { getUserProfile, UserProfile } from "../services/firestoreService";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AppStackParamList } from "../types/navigation";
+
 
 export default function BusinessScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
-
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   useEffect(() => {
     const unsub = onAuthStateChanged(
       auth,
@@ -40,12 +44,17 @@ export default function BusinessScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Welcome, {profile.displayName || profile.email}
+        Welcome, {profile.email}
       </Text>
       <Text style={styles.subtitle}>
         Member since: {profile.createdAt?.toDate?.().toLocaleDateString?.() || ""}
       </Text>
       <Button title="Sign Out" onPress={handleSignOut} />
+      <Button
+      title="Edit Profile"
+      onPress={() => navigation.navigate("Profile")}
+      />
+      <Button title="Profile Settings" onPress={() => navigation.navigate("Profile")} />
     </View>
   );
 }

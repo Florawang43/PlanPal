@@ -4,6 +4,8 @@ import AuthStack from "./navigation/AuthStack";
 import AppStack from "./navigation/AppStack";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase";
+import { View, ActivityIndicator } from "react-native";
+
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -11,6 +13,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
+      console.log("Firebase user state:", u);
       setUser(u);
       if (initializing) setInitializing(false);
     });
@@ -18,7 +21,9 @@ export default function App() {
   }, [initializing]);
 
   if (initializing) {
-    return null; 
+     return (
+    null
+  );
   }
 
   return (

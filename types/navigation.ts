@@ -5,4 +5,5 @@ export type AuthStackParamList = {
 
 export type AppStackParamList = {
   Business: undefined;
+  Profile: undefined;
 };
