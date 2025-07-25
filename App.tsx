@@ -13,7 +13,6 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
-      console.log("Firebase user state:", u);
       setUser(u);
       if (initializing) setInitializing(false);
     });
@@ -22,7 +21,9 @@ export default function App() {
 
   if (initializing) {
      return (
-    null
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" />
+    </View>
   );
   }
 
