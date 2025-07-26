@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
 type Props = {
     onSubmit: (email: string, password: string) => void;
     onToggle: () => void;
     error: string;
+    defaultEmail: string;
+    defaultPassword: string;
 };
 
-export default function SignInForm({ onSubmit, onToggle, error }: Props) {
+export default function SignInForm({ onSubmit, onToggle, error, defaultEmail='', defaultPassword='' }: Props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        setEmail(defaultEmail);
+        setPassword(defaultPassword);
+    }, [defaultEmail, defaultPassword]);
 
     const handlePress = () => {
         if (!email || !password) return;

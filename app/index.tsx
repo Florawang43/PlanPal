@@ -1,18 +1,17 @@
-
 import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import SignInForm from '../components/SignInForm';
 import SignUpForm from '../components/SignupForm';
-import { signInWithEmail, signUpNewUser } from '../utils/supabase';
-
-if (typeof structuredClone === 'undefined') {
-    globalThis.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
-}
+import { signInWithEmail, signUpNewUser } from '../utils/auth';
+import { auth } from '../utils/firebase';
+import { } from '../services/user_profile_service';
 
 export default function App() {
     const [isSigningIn, setIsSigningIn] = useState(true);
     const [error, setError] = useState('');
+    const [prefilledEmail, setPrefilledEmail] = useState('');
+    const [prefilledPassword, setPrefilledPassword] = useState('');
     const router = useRouter();
 
     const handleSignIn = async (email: string, password: string) => {
@@ -34,7 +33,9 @@ export default function App() {
         try {
             const user = await signUpNewUser(username, email, password);
             if (user) {
-                router.replace({ pathname: '/home', params: { user: JSON.stringify(user) } });
+                setPrefilledEmail(email);
+                setPrefilledPassword(password);
+                setIsSigningIn(true);
             } else {
                 setError('Sign up failed.');
             }
@@ -46,7 +47,7 @@ export default function App() {
     return (
         <View style={styles.container}>
             {isSigningIn ? (
-                <SignInForm onSubmit={handleSignIn} error={error} onToggle={() => setIsSigningIn(false)} />
+                <SignInForm onSubmit={handleSignIn} error={error} onToggle={() => setIsSigningIn(false)} defaultEmail={prefilledEmail} defaultPassword={prefilledPassword} />
             ) : (
                 <SignUpForm onSubmit={handleSignUp} error={error} onToggle={() => setIsSigningIn(true)} />
             )}
