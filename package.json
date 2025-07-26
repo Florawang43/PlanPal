@@ -11,7 +11,6 @@
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
     "@react-native-async-storage/async-storage": "2.1.2",
-    "@supabase/supabase-js": "^2.51.0",
     "firebase": "^11.10.0",
     "expo": "~53.0.9",
     "expo-router": "^5.0.7",

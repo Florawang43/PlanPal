@@ -4,14 +4,13 @@ import { useRouter } from 'expo-router';
 import SignInForm from '../components/SignInForm';
 import SignUpForm from '../components/SignupForm';
 import { signInWithEmail, signUpNewUser } from '../utils/auth';
-import { auth } from '../utils/firebase';
 import { } from '../services/user_profile_service';
 
 export default function App() {
     const [isSigningIn, setIsSigningIn] = useState(true);
     const [error, setError] = useState('');
-    const [prefilledEmail, setPrefilledEmail] = useState('');
-    const [prefilledPassword, setPrefilledPassword] = useState('');
+    const [prefilledEmail, setPrefilledEmail] = useState('disilucy@gmail.com');
+    const [prefilledPassword, setPrefilledPassword] = useState('test1234');
     const router = useRouter();
 
     const handleSignIn = async (email: string, password: string) => {
