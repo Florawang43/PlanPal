@@ -11,10 +11,29 @@ export default function SignUpForm({ onSubmit, onToggle, error }: Props) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [localError, setLocalError] = useState('');
+
+    const validateInput = () => {
+        if (!username) {
+            setLocalError('Username is required.');
+            return false;
+        }
+        if (!email.match(/^\S+@\S+\.\S+$/)) {
+            setLocalError('Please enter a valid email address.');
+            return false;
+        }
+        if (password.length < 6) {
+            setLocalError('Password must be at least 6 characters.');
+            return false;
+        }
+        setLocalError('');
+        return true;
+    };
 
     const handlePress = () => {
-        if (!username || !email || !password) return;
-        onSubmit(username, email, password);
+        if (validateInput()) {
+            onSubmit(username, email, password);
+        }
     };
 
     return (
@@ -46,6 +65,7 @@ export default function SignUpForm({ onSubmit, onToggle, error }: Props) {
                 secureTextEntry
             />
 
+            {localError ? <Text style={styles.error}>{localError}</Text> : null}
             {error ? <Text style={styles.error}>{error}</Text> : null}
 
             <Button title="Sign Up" onPress={handlePress} />

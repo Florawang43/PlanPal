@@ -1,14 +1,21 @@
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendEmailVerification
-} from 'firebase/auth';
-import { auth } from './firebase';
-import { createUserProfile } from '../services/user_profile_service';
+  sendEmailVerification,
+} from "firebase/auth";
+import { auth } from "./firebase";
+import { createUserProfile } from "../services/user_profile_service";
 
-export const signUpNewUser = async (username: string, email: string, password: string) => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+export const signUpNewUser = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
   const user = userCredential.user;
 
   await createUserProfile(user.uid, username, email);
@@ -19,13 +26,17 @@ export const signUpNewUser = async (username: string, email: string, password: s
 };
 
 export const signInWithEmail = async (email: string, password: string) => {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
   const user = userCredential.user;
 
   await user.reload();
 
   if (!user.emailVerified) {
-    throw new Error('Please verify your email before logging in.');
+    throw new Error("Please verify your email before logging in.");
   }
 
   return user;

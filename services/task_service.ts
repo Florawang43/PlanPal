@@ -36,7 +36,10 @@ export const createTask = async (
     ...task,
     deadline: Timestamp.fromDate(task.deadline),
   };
-  const ref = await addDoc(collection(db, "user_profiles", uid, "tasks"), taskData);
+  const ref = await addDoc(
+    collection(db, "user_profiles", uid, "tasks"),
+    taskData
+  );
   return ref.id;
 };
 
@@ -46,10 +49,14 @@ export const updateTask = async (
   updates: { name: string; description: string; deadline: Date; status: string }
 ) => {
   const taskRef = doc(db, "user_profiles", uid, "tasks", taskId);
-  return await setDoc(taskRef, {
-    ...updates,
-    deadline: Timestamp.fromDate(updates.deadline),
-  }, { merge: true });
+  return await setDoc(
+    taskRef,
+    {
+      ...updates,
+      deadline: Timestamp.fromDate(updates.deadline),
+    },
+    { merge: true }
+  );
 };
 
 export const deleteTask = async (uid: string, taskId: string) => {

@@ -8,9 +8,8 @@ const firebaseConfig = {
   projectId: "securitycrudapp",
   storageBucket: "securitycrudapp.firebasestorage.app",
   messagingSenderId: "66376414628",
-  appId: "1:66376414628:web:8d924da079553333517d31"
+  appId: "1:66376414628:web:8d924da079553333517d31",
 };
-
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);

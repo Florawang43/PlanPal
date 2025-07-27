@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import SignInForm from '../components/SignInForm';
 import SignUpForm from '../components/SignupForm';
 import { signInWithEmail, signUpNewUser } from '../utils/auth';
-import { } from '../services/user_profile_service';
 
 export default function App() {
     const [isSigningIn, setIsSigningIn] = useState(true);
@@ -35,6 +34,7 @@ export default function App() {
                 setPrefilledEmail(email);
                 setPrefilledPassword(password);
                 setIsSigningIn(true);
+                Alert.alert('Sign up succeed. Please verify your email before sign in!');
             } else {
                 setError('Sign up failed.');
             }

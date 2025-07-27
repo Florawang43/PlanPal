@@ -9,18 +9,33 @@ type Props = {
     defaultPassword: string;
 };
 
-export default function SignInForm({ onSubmit, onToggle, error, defaultEmail='', defaultPassword='' }: Props) {
+export default function SignInForm({ onSubmit, onToggle, error, defaultEmail = '', defaultPassword = '' }: Props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [localError, setLocalError] = useState('');
 
     useEffect(() => {
         setEmail(defaultEmail);
         setPassword(defaultPassword);
     }, [defaultEmail, defaultPassword]);
 
+    const validateInput = () => {
+        if (!email.match(/^\S+@\S+\.\S+$/)) {
+            setLocalError('Please enter a valid email address.');
+            return false;
+        }
+        if (password.length < 6) {
+            setLocalError('Password must be at least 6 characters.');
+            return false;
+        }
+        setLocalError('');
+        return true;
+    };
+
     const handlePress = () => {
-        if (!email || !password) return;
-        onSubmit(email, password);
+        if (validateInput()) {
+            onSubmit(email, password);
+        }
     };
 
     return (
@@ -44,6 +59,7 @@ export default function SignInForm({ onSubmit, onToggle, error, defaultEmail='',
                 secureTextEntry
             />
 
+            {localError ? <Text style={styles.error}>{localError}</Text> : null}
             {error ? <Text style={styles.error}>{error}</Text> : null}
 
             <Button title="Sign In" onPress={handlePress} />
