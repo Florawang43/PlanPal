@@ -30,7 +30,7 @@ export const getTaskById = async (uid: string, taskId: string) => {
 
 export const createTask = async (
   uid: string,
-  task: { name: string; course: string; description: string; deadline: Date; status: string; priority: number }
+  task: { name: string; course: string; description: string; deadline: Date; status: string; priority: number; notificationInterval: number }
 ) => {
   const taskData = {
     ...task,
@@ -46,7 +46,7 @@ export const createTask = async (
 export const updateTask = async (
   uid: string,
   taskId: string,
-  updates: { name: string; course: string; description: string; deadline: Date; status: string; priority: number }
+  updates: { name: string; course: string; description: string; deadline: Date; status: string; priority: number; notificationInterval: number }
 ) => {
   const taskRef = doc(db, "user_profiles", uid, "tasks", taskId);
   return await setDoc(

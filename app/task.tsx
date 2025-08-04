@@ -31,11 +31,12 @@ export default function TaskDetailPage() {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [deadline, setDeadline] = useState(new Date());
+  const [deadline, setDeadline] = useState(new Date(Date.now() + 2 * 60 * 1000));
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [status, setStatus] = useState<'active' | 'inactive'>('active');
   const [course, setCourse] = useState('');
   const [priority, setPriority] = useState<0 | 1 | 2 | 3>(1);
+  const [notificationInterval, setNotificationInterval] = useState<24 | 12 | 6>(24);
 
   useEffect(() => {
     if (uid && taskId) {
@@ -48,11 +49,43 @@ export default function TaskDetailPage() {
           setStatus(data.status);
           setCourse(data.course || '');
           setPriority(data.priority ?? 1);
+          setNotificationInterval(data.notificationInterval ?? 24);
         }
       };
       fetchTask();
     }
   }, [uid, taskId]);
+
+  const generateNotificationSchedule = (
+  start: Date,
+  end: Date,
+  intervalHours: number
+): Date[] => {
+  const schedule: Date[] = [];
+
+  const deadlineReminder = new Date(end.getTime());
+  schedule.push(deadlineReminder);
+
+  const oneHourBeforeDeadline = new Date(end.getTime() - 60 * 60 * 1000);
+  if (oneHourBeforeDeadline > start && oneHourBeforeDeadline < end) {
+    schedule.push(oneHourBeforeDeadline);
+  }
+
+  const intervalMillis = intervalHours * 60 * 60 * 1000;
+  let current = new Date(start.getTime());
+
+  while (current < end) {
+    schedule.push(new Date(current.getTime()));
+    current = new Date(current.getTime() + intervalMillis);
+  }
+
+  const uniqueTimestamps = Array.from(new Set(schedule.map(d => d.getTime())));
+  const uniqueDates = uniqueTimestamps
+    .map(ts => new Date(ts))
+    .filter(d => d > new Date());
+
+  return uniqueDates;
+};
 
   const handleSave = async () => {
     if (!uid) return;
@@ -64,7 +97,9 @@ export default function TaskDetailPage() {
         status,
         course,
         priority,
+        notificationInterval,
       };
+
       if (isNewTask) {
         await createTask(uid as string, taskData);
         Alert.alert('Task created');
@@ -72,9 +107,27 @@ export default function TaskDetailPage() {
         await updateTask(uid as string, taskId as string, taskData);
         Alert.alert('Task updated');
       }
-      if (scheduleReminder(name, description, deadline)) {
+
+      const now = new Date();
+      const notificationTimes = generateNotificationSchedule(
+        now,
+        deadline,
+        notificationInterval
+      );
+
+      let allSucceeded = true;
+      for (const time of notificationTimes) {
+        const success = await scheduleReminder(name, description, time);
+        if (!success) {
+          allSucceeded = false;
+          break;
+        }
+      }
+
+      if (allSucceeded) {
         Alert.alert('Reminder set!');
       }
+
       router.replace({
         pathname: '/home',
         params: { user: JSON.stringify({ uid }) },
@@ -194,6 +247,18 @@ export default function TaskDetailPage() {
               <Picker.Item label="Normal" value={1} />
               <Picker.Item label="High" value={2} />
               <Picker.Item label="Critical" value={3} />
+            </Picker>
+          </View>
+
+          <Text style={styles.label}>Notification Interval</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={notificationInterval}
+              onValueChange={(itemValue) => setNotificationInterval(itemValue)}
+            >
+              <Picker.Item label="Every 24 hours" value={24} />
+              <Picker.Item label="Every 12 hours" value={12} />
+              <Picker.Item label="Every 6 hours" value={6} />
             </Picker>
           </View>
 
