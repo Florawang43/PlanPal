@@ -14,6 +14,8 @@ type Task = {
     description: string;
     deadline: Timestamp;
     status: 'active' | 'inactive';
+    course: string;
+    priority: number;
 };
 
 export default function HomePage() {
@@ -28,14 +30,32 @@ export default function HomePage() {
         useCallback(() => {
             const fetchTasks = async () => {
                 if (parsedUser?.uid) {
-                    if (username == '') {
+                    if (username === '') {
                         const profile = await getUserProfile(parsedUser.uid);
                         if (profile && profile.username) {
                             setUsername(profile.username);
                         }
                     }
+
                     const data = await getTasksForUser(parsedUser.uid);
-                    setTasks(data as Task[]);
+
+                    const grouped: { [key: string]: Task[] } = {};
+                    (data as Task[]).forEach((task) => {
+                        if (!grouped[task.course]) {
+                            grouped[task.course] = [];
+                        }
+                        grouped[task.course].push(task);
+                    });
+
+                    Object.keys(grouped).forEach((course) => {
+                        grouped[course].sort((a, b) => a.priority - b.priority);
+                    });
+
+                    const sortedTasks = Object.keys(grouped)
+                        .sort((a, b) => a.localeCompare(b))
+                        .flatMap((course) => grouped[course]);
+
+                    setTasks(sortedTasks);
                 }
             };
             fetchTasks();
