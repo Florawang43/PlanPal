@@ -154,12 +154,6 @@ export default function TaskDetailPage() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
             <Ionicons
@@ -264,8 +258,6 @@ export default function TaskDetailPage() {
 
           <Button title="Save Task" onPress={handleSave} />
         </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
   );
 }
 
