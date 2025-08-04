@@ -107,7 +107,11 @@ export default function HomePage() {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-            <Button title="Sign Out" onPress={handleSignOut} />
+            <View style={{ marginTop: 100 }}>
+                <TouchableOpacity style={styles.saveButton} onPress={handleSignOut}>
+                    <Text style={styles.saveButtonText}>Sign Out</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -147,5 +151,21 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
+    },
+    saveButton: {
+        backgroundColor: '#222',
+        paddingVertical: 14,
+        paddingHorizontal: 30,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        marginTop: 20,
+        width: '80%'
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '500',
     },
 });

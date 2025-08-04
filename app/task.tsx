@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -210,7 +211,14 @@ export default function TaskDetailPage() {
 
       <Text style={styles.label}>Deadline</Text>
       <Button
-        title={deadline.toLocaleString()}
+        title={deadline.toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        })}
         onPress={() => setShowDatePicker(true)}
       />
       {showDatePicker && (
@@ -271,7 +279,11 @@ export default function TaskDetailPage() {
         listMode="SCROLLVIEW"
       />
 
-      <Button title="Save Task" onPress={handleSave} />
+      <View style={{ marginTop: 100 }}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -316,5 +328,21 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     borderColor: '#ccc',
     borderRadius: 8,
+  },
+  saveButton: {
+    backgroundColor: '#222',
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+    width: '80%'
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
