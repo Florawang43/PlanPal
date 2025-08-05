@@ -32,7 +32,7 @@ export default function TaskDetailPage() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [course, setCourse] = useState('');
 
-  const [status, setStatus] = useState<'active' | 'inactive'>('active');
+  const [status, setStatus] = useState<'not_started' | 'in_progress' | 'completed'>('not_started');
   const [priority, setPriority] = useState<0 | 1 | 2 | 3>(1);
   const [notificationInterval, setNotificationInterval] = useState<24 | 12 | 6>(24);
 
@@ -41,8 +41,9 @@ export default function TaskDetailPage() {
   const [intervalOpen, setIntervalOpen] = useState(false);
 
   const [statusItems, setStatusItems] = useState([
-    { label: 'Active', value: 'active' },
-    { label: 'Inactive', value: 'inactive' },
+    { label: 'Not Started', value: 'not_started' },
+    { label: 'In Progress', value: 'in_progress' },
+    { label: 'Completed', value: 'completed' },
   ]);
   const [priorityItems, setPriorityItems] = useState([
     { label: 'Low', value: 0 },
@@ -64,7 +65,13 @@ export default function TaskDetailPage() {
           setName(data.name);
           setDescription(data.description);
           setDeadline(data.deadline.toDate());
-          setStatus(data.status);
+          setStatus(
+            data.status === 'active'
+              ? 'in_progress'
+              : data.status === 'inactive'
+                ? 'not_started'
+                : data.status
+          );
           setCourse(data.course || '');
           setPriority(data.priority ?? 1);
           setNotificationInterval(data.notificationInterval ?? 24);
@@ -103,11 +110,11 @@ export default function TaskDetailPage() {
     if (!uid) return;
     try {
       const taskData = {
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         deadline,
         status,
-        course,
+        course: course.trim(),
         priority,
         notificationInterval,
       };
@@ -118,6 +125,7 @@ export default function TaskDetailPage() {
         await updateTask(uid as string, taskId as string, taskData);
         Alert.alert('Task updated');
       }
+
       const now = new Date();
       const notificationTimes = generateNotificationSchedule(
         now,
@@ -160,6 +168,25 @@ export default function TaskDetailPage() {
     }
   };
 
+  const confirmDelete = () => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this task?',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: handleDelete,
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
@@ -177,7 +204,7 @@ export default function TaskDetailPage() {
             name="trash-outline"
             size={24}
             color="red"
-            onPress={handleDelete}
+            onPress={confirmDelete}
           />
         ) : (
           <View style={{ width: 28 }} />
@@ -338,7 +365,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     marginTop: 20,
-    width: '80%'
+    width: '80%',
   },
   saveButtonText: {
     color: '#fff',
